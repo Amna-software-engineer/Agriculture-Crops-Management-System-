@@ -1,22 +1,39 @@
 import { useState } from "react";
 import { Mail, Lock, ArrowRight, Loader2, Leaf } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogin } from "../api/auth.api";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../features/auth.slice";
 
 const LoginForm = () => {
-    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
 
-    const handleSubmit = (e) => {
+    const { login, loading } = useLogin();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        // Simulate API Call
-        setTimeout(() => {
-            setLoading(false);
-            console.log("Login Attempt:", formData);
-        }, 1500);
+        const data = await login(formData);
+        if (data) {
+            dispatch(setAuth(data.user));
+
+            if (data.user.role === "client") {
+                navigate("/dashboard/client");
+            }
+            if (data.user.role === "farmer") {
+                navigate("/dashboard/farmer");
+            }
+            if (data.user.role === "broker") {
+                navigate("/dashboard/broker");
+            }
+            if (data.user.role === "admin") {
+                navigate("/dashboard/admin");
+            }
+        }
     };
 
     const handleInputChange = (e) => {

@@ -10,36 +10,37 @@ import {
     ShoppingBag,
     Loader2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useRegister } from "../api/auth.api";
 
 const RegisterPage = () => {
-    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
-        role: "Client",
+        role: "client",
     });
+
+    const { register, loading } = useRegister();
+    const navigate = useNavigate();
 
     const roles = [
         {
-            id: "Client",
+            id: "client",
             icon: <ShoppingBag size={18} />,
             desc: "Buy fresh crops",
         },
-        { id: "Farmer", icon: <Leaf size={18} />, desc: "Sell your harvest" },
-        { id: "Broker", icon: <Briefcase size={18} />, desc: "Manage trades" },
-        { id: "Admin", icon: <UserCircle size={18} />, desc: "System control" },
+        { id: "farmer", icon: <Leaf size={18} />, desc: "Sell your harvest" },
+        { id: "broker", icon: <Briefcase size={18} />, desc: "Manage trades" },
+        { id: "admin", icon: <UserCircle size={18} />, desc: "System control" },
     ];
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        // Simulate API Registration
-        setTimeout(() => {
-            setLoading(false);
-            console.log("Registering User:", formData);
-        }, 1500);
+        const data = await register(formData);
+        if (data.success) {
+            navigate("/login");
+        }
     };
 
     const handleInputChange = (e) => {

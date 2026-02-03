@@ -1,4 +1,4 @@
-import { check, validationResult } from "express-validator";
+
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -6,37 +6,27 @@ import UserModel from "../models/auth.model.js";
 dotenv.config();
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "someaccesssecret";
-const JWT_REFRESH_SECRET =
-    process.env.JWT_REFRESH_SECRET || "somerefreshsecret";
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "somerefreshsecret";
 
 
 // Login Contoller
-export const Login = [
-    // Validating Email
-    check("email")
-        .trim()
-        .notEmpty()
-        .withMessage("Email is required")
-        .isEmail()
-        .withMessage("Invalid email format"),
-    // Validating password
-    check("password").trim().notEmpty().withMessage("Password is required"),
-    async (req, res) => {
-        const { email, password } = req.body;
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            res.status(404).json({
-                errs: errors.array().map((err) => err.msg),
-            });
-        } else {
+export const Login = async (req, res) => {
+    const {email,password}=req.body;
+    
             try {
+                if (!email || !password) {
+                    return res.status(401).json({
+                        success: false,
+                        message: "Please provide all the fields",
+                    });
+                    
+                }
                 const user = await UserModel.findOne({ email });
                 if (!user) {
-                    return res
-                        .status(404)
-                        .json({ errs: ["email or user does not found"] });
-                }
+                    return res .status(404) .json( { 
+                        success: false,
+                         message: "email or user does not found"
+                     }); }
                 const isMatch = await bcrypt.compare(password, user.password);
                 if (isMatch) {
                     const accessToken = jwt.sign(
@@ -48,17 +38,24 @@ export const Login = [
                         JWT_REFRESH_SECRET,
                     );
                     res.status(200).json({
-                        msg: "Login Successfully",
+                        success: true,
+                        message: "Login Successfully",
                         accessToken,
                         refreshToken,
+                        user: {
+                            _id: user._id,
+                            email: user.email,
+                            name: user.name,
+                            role: user.role,
+                        },
                     });
                 }
             } catch (error) {
                 console.log(error);
-                return res.status(400).json({ errs: ["Invalid Credentials"] });
+                return res.status(400).json({ success:false, message: ["Invalid Credentials"] });
             }
-        }}
-    ]
+
+        }
 
 export const Register = async (req, res) => {
     try {
@@ -91,7 +88,6 @@ export const Register = async (req, res) => {
             return res.status(201).json({
                 success: true,
                 message: "User registered successfully",
-                user,
             });
         }
     } catch (error) {
