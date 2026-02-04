@@ -26,6 +26,8 @@ export const postOrder = async (req, res) => {
 export const getOrders = async (req, res) => {
     try {
         const allOrders = await Order.find();
+        console.log("allorders ",allOrders);
+        
         res.status(200).json({ success: true, message: "Orders featched Succesfuly", allOrders });
     } catch (error) {
         console.log("Error in Order Controller : ", error.message);

@@ -30,11 +30,11 @@ export const Login = async (req, res) => {
                 const isMatch = await bcrypt.compare(password, user.password);
                 if (isMatch) {
                     const accessToken = jwt.sign(
-                        { name: user.name, emial: user.email },
+                        { name: user.name, emial: user.email,role: user.role },
                         JWT_ACCESS_SECRET,
                     );
                     const refreshToken = jwt.sign(
-                        { name: user.name, email: user.email },
+                        { name: user.name, email: user.email,role: user.role },
                         JWT_REFRESH_SECRET,
                     );
                     res.status(200).json({

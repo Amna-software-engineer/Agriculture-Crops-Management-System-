@@ -18,6 +18,8 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = await login(formData);
+        console.log("api response ",data);
+        
         if (data) {
             dispatch(setAuth(data.user));
 

@@ -18,7 +18,9 @@ export const useLogin = () => {
             });
 
             if (response.data) {
-                const accessToken = response.data.accesstoken;
+                console.log("login response ",response);
+                
+                const accessToken = response.data.accessToken;
 
                 if (!accessToken) {
                     console.log("dev log: missing token");
@@ -64,6 +66,7 @@ export const useRegister = () => {
             });
 
             if (response.data) {
+                  console.log("response ",response);
                 toast.success("Registered successfully.");
                 return response.data;
             }
