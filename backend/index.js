@@ -6,6 +6,7 @@ import AuthRouter from "./router/auth.router.js";
 import { ConnectDb } from "./db/db.js";
 
 import cropRouter from "./router/crop.router.js"
+import userRouter from "./router/user.router.js"
 const PORT = 3000;
 
 dotenv.config();
@@ -22,6 +23,8 @@ app.use(
 
 app.use("/api/auth", AuthRouter);
 app.use("/api",cropRouter);
+app.use("/api",userRouter);
+
 
 app.listen(PORT, async () => {
     console.log(`Server is listing on PORT=${PORT}`);
