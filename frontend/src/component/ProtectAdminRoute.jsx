@@ -1,29 +1,35 @@
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom"; 
-import { jwtDecode } from "jwt-decode";
+import React, { useState, useEffect } from 'react'
+import { Navigate } from 'react-router-dom'
+import { jwtDecode } from 'jwt-decode'
 
 export const ProtectAdminRoute = ({ children }) => {
-    const [isAllowed, setIsAllowed] = useState(null); 
-    const accessToken = localStorage.getItem("accessToken");
+  const [isValid, setIsValid] = useState(null)
+  const accessToken = localStorage.getItem('accessToken')
 
+  const verify = () => {
+    if (!accessToken) {
+      setIsValid(false) // token doesnot exist
+      return
+    }
 
-useEffect(() => {
-    if (accessToken) {
-           
-            const decodedToken = jwtDecode(accessToken);                
-                if (decodedToken.role === "admin") {
-                    setIsAllowed(true);
-                } else {
-                    setIsAllowed(false);
-                }
-          
-        } else {
-            setIsAllowed(false);
-        }
-    }, [accessToken]);
+      const decoded = jwtDecode(accessToken)
     
-    if (isAllowed === null) 
-      {return <div>Checking Authorization...</div>}  
+      // token valid
+      if (decoded.role=="admin") {
+        setIsValid(true)
+      }else{
+        setIsValid(null)
+      }
+   
+  }
 
-    return isAllowed ? children : <Navigate to="/login" />
+  useEffect(() => {
+    console.log('ProtectAdminRoute Called')
+    verify()
+  }, [accessToken])
+
+  if (isValid === null) {return <div>Checking Authorization...</div>}  
+
+  return isValid ? children : <Navigate to='/login' />
 }
+

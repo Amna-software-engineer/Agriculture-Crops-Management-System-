@@ -1,3 +1,4 @@
+import User from "../models/auth.model.js"
 import Crops from "../models/crop.model.js"
 
 export const postCrops = async (req, res) => {
@@ -22,7 +23,7 @@ export const postCrops = async (req, res) => {
 }
 export const getCrops = async (req, res) => {
     try {
-        const allCrops = await Crops.find();
+        const allCrops = await Crops.find().populate("formerId","name");
         res.status(200).json({ success: true, message: "Crops featched Succesfuly", allCrops });
     } catch (error) {
         console.log("Error in Crops Controller : ", error.message);
@@ -35,9 +36,15 @@ export const getCrops = async (req, res) => {
 export const getSingleCrop = async (req, res) => {
     const id = req.params.id;
     try {
-        const singleCrop = await Crops.findById(id);
-        console.log("singleCrop", singleCrop);
-        res.status(200).json({ success: true, message: "Crop featched Succesfuly", singleCrop });
+        const singleCrop = await Crops.findOne({id}).populate("formerId","name");
+        if(singleCrop){
+            return res.status(200).json({ success: true, message: "Crop featched Succesfuly", singleCrop });
+        }else{
+            return res.status(404).json({ 
+            success: false, 
+            message: "Crop not found in database" 
+        });
+        }
     } catch (error) {
         console.log("Error in Crops Controller : ", error.message);
         return res.status(500).json({

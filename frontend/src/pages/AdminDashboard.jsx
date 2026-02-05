@@ -8,6 +8,7 @@ import { useGetAllUsers } from '../api/user.api';
 import { setCrops } from '../features/crops.slice';
 import { setOrder } from '../features/order.slice';
 import { setUser } from '../features/user.slice';
+import {formatDistanceToNow} from "date-fns"
 
 const AdminDashboard = () => {
   const [cropList, setCropList] = useState([])
@@ -15,8 +16,8 @@ const AdminDashboard = () => {
   const [userList, setUserList] = useState([])
   const dispatch = useDispatch();
   const { loading, Error, getCrops } = useGetAllCrops();
-  const {  getOrders } = useGetAllOrders();
-  const {  getUsers } = useGetAllUsers();
+  const { getOrders } = useGetAllOrders();
+  const { getUsers } = useGetAllUsers();
   useEffect(() => {
     (async () => {
       const crops = await getCrops()
@@ -30,10 +31,28 @@ const AdminDashboard = () => {
 
   }, [])
 
-dispatch(setCrops(cropList))
-dispatch(setOrder(orderList))
-dispatch(setUser(userList))
-  
+  dispatch(setCrops(cropList))
+  dispatch(setOrder(orderList))
+  dispatch(setUser(userList))
+  console.log(cropList, orderList);
+
+  // Recent Activity logic
+  const allActivities = [
+    ...cropList.map(crop => ({
+      text: "New Crop Added: ",
+      name: crop.name,
+      user: crop.formerId.name, 
+      time: new Date(crop.createdAt),
+    })),
+    ...orderList.map(order => ({
+      text: "New Order Placed: ",
+      // name: order.crop.name,
+      user: order.buyer.name,
+      time: new Date(order.createdAt),
+    }))
+  ]
+  const sortedActivities = allActivities.sort((a, b) => b.time - a.time); //a first elment of array, b last it find defference is + then 1st element is geater- this will sort in Descending order. it works like bouble sort
+  const recentActivities = allActivities.slice(0, 4) //take only 1st five activites(recent)
   return (
     <div className="p-6 space-y-8">
       {/* Header Section */}
@@ -63,7 +82,7 @@ dispatch(setUser(userList))
           </div>
           <div>
             <p className="text-gray-500 text-sm font-medium">Total Users</p>
-            <h2 className="text-2xl font-bold text-gray-800">{userList?.length || 0 }</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{userList?.length || 0}</h2>
           </div>
         </div>
 
@@ -106,16 +125,13 @@ dispatch(setUser(userList))
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 text-sm text-gray-600">
-              <tr>
-                <td className="px-6 py-4">New Crop Added: <span className="text-emerald-600 font-medium">Organic Wheat</span></td>
-                <td className="px-6 py-4 text-center">Farmer Zaid</td>
-                <td className="px-6 py-4 text-right">2 mins ago</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 text-gray-600">Order Completed</td>
-                <td className="px-6 py-4 text-center">Client Sarah</td>
-                <td className="px-6 py-4 text-right">15 mins ago</td>
-              </tr>
+              {recentActivities.map(activity => (
+                <tr>
+                  <td className="px-6 py-4">{activity.text} <span className="text-emerald-600 font-medium">{activity.name}</span></td>
+                  <td className="px-6 py-4 text-center">{activity.user}</td>
+                   <td className="px-6 py-4 text-right">{formatDistanceToNow(activity.time,{ addSuffix: true })}</td> 
+                </tr> 
+              ))} {/*addSuffix- will add time ago */}            
             </tbody>
           </table>
         </div>

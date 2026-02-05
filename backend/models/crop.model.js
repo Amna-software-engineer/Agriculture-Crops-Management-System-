@@ -18,12 +18,12 @@ const cropSchema = new mongoose.Schema({
     },
     formerId: { 
         type: mongoose.Schema.Types.ObjectId,
-         ref: "User", 
+         ref: "UserModel", 
          required: true },
     imgURL: { type: String},
 
 
-})
+},{timestamps:true})
 
 const model = mongoose.model("CropModel",cropSchema);
 export default model;

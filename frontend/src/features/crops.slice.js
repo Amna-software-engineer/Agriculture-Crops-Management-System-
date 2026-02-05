@@ -17,7 +17,7 @@ const cropSlice = createSlice({
     initialState: INITIAL_STATE,
     reducers: {
         setCrops: (state, action) => {
-            state._id = action.payload._id;
+            state.id = action.payload._id;
             state.type = action.payload.type;
             state.quantity = action.payload.quantity;
             state.price = action.payload.price;
