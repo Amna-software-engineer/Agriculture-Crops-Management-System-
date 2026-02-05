@@ -3,7 +3,7 @@ import { BaseApi } from "./base.api";
 import { CropEndPoints, OrderEndPoints } from "./endpoints";
 import { toast } from "react-toastify";
 
-
+// custome hook to get all order from backend
 export const useGetAllOrders = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);

@@ -1,21 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, X, Trash2, Leaf } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import AdminDashboardHeader from '../../component/admin/adminDashboardHeader';
+import { useSelector } from 'react-redux';
+import { useDeleteCrop, useEditCropStatus } from '../../api/crop.api';
 
 
-const SystemCrops = ({ cropList }) => {
-    const accessToken = localStorage.getItem('accessToken')
-  const decoded = jwtDecode(accessToken);
+const SystemCrops = () => {
+const {editStatus}=useEditCropStatus()
+const {deleteUser}=useDeleteCrop()
+  const cropList = useSelector(state => state.crops.crops);
+  // console.log(cropList);
+  // funstion to handle edit status
+  const HandleStatus = async(id,status) => {
+    const updatedCrop =await editStatus(id,{status: status});
+  }
+  const handleDelete = async(id) => {
+    console.log("id ",id);
+    
+    const updatedList =await deleteUser(id);
+     console.log("updatedList ", updatedList);
+  }
+
   return (
     <div className="p-6 space-y-8">
-       {/* Header Section */}
-        <AdminDashboardHeader page="Crops"/>
+      {/* Header Section */}
+      <AdminDashboardHeader page="Crops" />
 
       {/* Main Table Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-50 flex justify-between items-center">
-          <h3 className="font-bold text-gray-800 text-lg">All Crop Listings (God View)</h3>
+          <h3 className="font-bold text-gray-800 text-lg">All Crop Listings</h3>
           <span className="text-sm text-gray-500 font-medium">{cropList?.length || 0} Total Listings</span>
         </div>
 
@@ -59,23 +74,27 @@ const SystemCrops = ({ cropList }) => {
 
                   {/* Status Badge */}
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
-                      crop.status === 'Available' || crop.status === 'Live' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'
-                    }`}>
-                      {crop.status === 'Available' ? 'LIVE' : 'PENDING'}
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase border ${crop.status === 'Live' ? 'bg-emerald-100 text-emerald-600 border-emerald-200' :
+                        crop.status === 'Pending' ? 'bg-amber-100 text-amber-600 border-amber-200' :
+                          crop.status === 'Rejected' ? 'bg-red-100 text-red-600 border-red-200' :
+                            crop.status === 'Sold Out' ? 'bg-gray-100 text-gray-600 border-gray-200' :
+                              'bg-blue-100 text-blue-600 border-blue-200'
+                      }`}>
+                      {crop.status}
                     </span>
                   </td>
 
                   {/* Action Buttons */}
                   <td className="px-6 py-4">
                     <div className="flex justify-center gap-2">
-                      <button className="p-1.5 hover:bg-emerald-50 text-emerald-500 rounded-md transition-colors border border-emerald-100">
+                     
+                      <button className="p-1.5 hover:bg-emerald-50 text-emerald-500 rounded-md transition-colors border border-emerald-100" onClick={() => HandleStatus(crop._id,"Live")}>
                         <Check size={16} />
                       </button>
-                      <button className="p-1.5 hover:bg-red-50 text-red-400 rounded-md transition-colors border border-red-50">
+                      <button className="p-1.5 hover:bg-red-50 text-red-400 rounded-md transition-colors border border-red-50" onClick={() => HandleStatus(crop._id,"Rejected")}>
                         <X size={16} />
                       </button>
-                      <button className="p-1.5 hover:bg-gray-50 text-gray-300 rounded-md transition-colors ml-4">
+                      <button className="p-1.5 hover:bg-gray-50 text-gray-300 rounded-md transition-colors ml-4" onClick={() => handleDelete(crop._id)}>
                         <Trash2 size={16} />
                       </button>
                     </div>

@@ -12,7 +12,7 @@ const cropSchema = new mongoose.Schema({
     location: { type: String, required: true },
     status: {
         type: String,
-        enum: ["Available", "Sold Out"],
+        enum: ["Pending", "Live", "Rejected", "Sold Out"],
         default: "Available",
         required: true
     },

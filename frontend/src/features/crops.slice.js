@@ -7,6 +7,8 @@ const cropSlice = createSlice({
     initialState: {crops: savedCrops && savedCrops  !==  "undefined" ? savedCrops : []},
     reducers: {
         setCrops: (state, action) => {
+            console.log("setCrops", action.payload);
+            
             state.crops=action.payload;
              localStorage.setItem("cropsList", JSON.stringify(action.payload));
         },

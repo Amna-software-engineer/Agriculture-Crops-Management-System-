@@ -3,7 +3,9 @@ export const AuthEndPoints = {
     register: "/auth/register",
 };
 export const CropEndPoints = {
-    crop:"/crops"
+    crop:"/crops",
+    editCrop:(id)=>`/crops/status/${id}`,  
+    deleteCrop:(id)=>`/crops/${id}`,  
 };
 export const OrderEndPoints = {
     order:"/order"

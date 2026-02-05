@@ -1,10 +1,15 @@
 import React from 'react';
 import { LayoutDashboard, Users, Leaf, LogOut } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 const AdminSidebar = () => {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
-
+  const navigate = useNavigate();
+  // function to handle logout
+  const handleLogout =()=>{
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  }
   return (
     <div className="w-64 h-screen bg-[#0f172a] text-gray-400 flex flex-col p-4">
       {/* Brand Logo Section */}
@@ -21,9 +26,9 @@ const AdminSidebar = () => {
       {/* Navigation Links */}
       <nav className="space-y-2">
         <Link
-          to="/"
+          to="/dashboard/admin"
           className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-            isActive('/') 
+            isActive('/dashboard/admin') 
               ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
               : 'hover:bg-gray-800 hover:text-gray-200'
           }`}
@@ -59,7 +64,7 @@ const AdminSidebar = () => {
 
       {/* Logout Button at Bottom */}
       <div className="border-t border-gray-800 pt-4 mt-auto">
-        <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-red-900/20 hover:text-red-400 transition-all text-gray-400">
+        <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-red-900/20 hover:text-red-400 transition-all text-gray-400" onClick={handleLogout}>
           <LogOut size={20} />
           <span className="font-medium">Logout</span>
         </button>

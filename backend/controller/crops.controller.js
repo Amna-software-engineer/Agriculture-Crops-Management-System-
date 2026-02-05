@@ -55,9 +55,16 @@ export const getSingleCrop = async (req, res) => {
 }
 export const deleteCrops = async (req, res) => {
     const id = req.params.id;
+    console.log("id ",id);
+    
     try {
-        const deletedCrops = await Crops.findOneAndDelete({ id });
-        res.status(200).json({ success: true, message: "Crops deleted Succesfuly", deletedCrops });
+    const deletedCrop = await Crops.findOneAndDelete({ _id:id });
+    console.log("deleteCrops ",deletedCrop);
+        if (deletedCrop !== null) {
+            res.status(200).json({ success: true, message: "Crop deleted Succesfuly", deletedCrop });  
+        }else{
+             res.status(404).json({ success: false, message: "Crop Not Found" });  
+        }
     } catch (error) {
         console.log("Error in Crops Controller : ", error.message);
         return res.status(500).json({
@@ -69,9 +76,22 @@ export const deleteCrops = async (req, res) => {
 export const editCrop = async (req, res) => {
     const id = req.params.id;
     const { name, cropType, quantity, price, location, status, formerId, imgURL } = req.body;
-
     try {
         const updatedCrop = await Crops.findByIdAndUpdate(id, { name, cropType, quantity, price, location, status, formerId, imgURL });
+        res.status(200).json({ success: true, message: "Crops updated Succesfuly", updatedCrop });
+    } catch (error) {
+        console.log("Error in Crops Controller : ", error.message);
+        return res.status(500).json({
+            success: false,
+            error,
+        });
+    }
+}
+export const editCropStatus = async (req, res) => {
+    const id = req.params.id;
+    const { status} = req.body;
+    try {
+        const updatedCrop = await Crops.findByIdAndUpdate(id, {status:status});
         console.log("updatedCrop ", updatedCrop);
         res.status(200).json({ success: true, message: "Crops updated Succesfuly", updatedCrop });
     } catch (error) {
