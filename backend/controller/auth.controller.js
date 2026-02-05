@@ -30,7 +30,7 @@ export const Login = async (req, res) => {
                 const isMatch = await bcrypt.compare(password, user.password);
                 if (isMatch) {
                     const accessToken = jwt.sign(
-                        { name: user.name, emial: user.email,role: user.role },
+                        { name: user.name, email: user.email,role: user.role },
                         JWT_ACCESS_SECRET,
                     );
                     const refreshToken = jwt.sign(
@@ -58,6 +58,8 @@ export const Login = async (req, res) => {
         }
 
 export const Register = async (req, res) => {
+    console.log("req.body",req.body);
+    
     try {
         const { name, email, password, role } = req.body;
 
@@ -77,17 +79,18 @@ export const Register = async (req, res) => {
             });
         }
 
-        const user = await UserModel.create({
+        const newUser = await UserModel.create({
             name,
             email,
             role,
             password,
         });
 
-        if (user) {
+        if (newUser) {
             return res.status(201).json({
                 success: true,
                 message: "User registered successfully",
+                newUser
             });
         }
     } catch (error) {

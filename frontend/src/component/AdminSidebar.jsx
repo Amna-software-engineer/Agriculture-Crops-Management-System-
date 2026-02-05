@@ -3,8 +3,6 @@ import { LayoutDashboard, Users, Leaf, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 const AdminSidebar = () => {
   const location = useLocation();
-
-  // Aik simple function jo check karega ke kaunsa link active hai
   const isActive = (path) => location.pathname === path;
 
   return (
@@ -35,9 +33,9 @@ const AdminSidebar = () => {
         </Link>
 
         <Link
-          to="/users"
+          to="/dashboard/admin/user-managment"
           className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-            isActive('/users') 
+            isActive('/dashboard/admin/user-managment') 
               ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
               : 'hover:bg-gray-800 hover:text-gray-200'
           }`}
@@ -47,9 +45,9 @@ const AdminSidebar = () => {
         </Link>
 
         <Link
-          to="/crops"
+          to="/dashboard/admin/system-crops"
           className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-            isActive('/crops') 
+            isActive('/dashboard/admin/system-crops') 
               ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
               : 'hover:bg-gray-800 hover:text-gray-200'
           }`}

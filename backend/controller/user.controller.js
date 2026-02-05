@@ -42,11 +42,12 @@ export const deleteUser =async (req,res) => {
         });
     }
 }
-export const editUser =async (req,res) => {
+export const editUser =async (req,res) => {   
      const id = req.params.id;
-     const { name, email, password, role } = req.body;
+     const { name, role ,status} = req.body;
+     
      try {
-        const updatedUser = await User.findByIdAndUpdate(id, { name, email, password, role });
+        const updatedUser = await User.findByIdAndUpdate(id, { name, role ,status });
         res.status(200).json({ success: true, message: "User updated Succesfuly", updatedUser });
     } catch (error) {
         console.log("Error in User Controller : ", error.message);

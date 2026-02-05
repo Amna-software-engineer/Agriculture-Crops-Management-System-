@@ -2,13 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import { Users, Leaf, ShoppingBag } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { useGetAllCrops } from '../api/crop.api';
-import { useGetAllOrders } from '../api/order.api';
-import { useGetAllUsers } from '../api/user.api';
-import { setCrops } from '../features/crops.slice';
-import { setOrder } from '../features/order.slice';
-import { setUser } from '../features/user.slice';
-import {formatDistanceToNow} from "date-fns"
+import { useGetAllCrops } from '../../api/crop.api';
+import { useGetAllOrders } from '../../api/order.api';
+import { useGetAllUsers } from '../../api/user.api';
+import { setCrops } from '../../features/crops.slice';
+import { setOrder } from '../../features/order.slice';
+import { setUser } from '../../features/user.slice';
+import { formatDistanceToNow } from "date-fns"
+import { jwtDecode } from 'jwt-decode';
+import AdminDashboardHeader from '../../component/admin/adminDashboardHeader';
 
 const AdminDashboard = () => {
   const [cropList, setCropList] = useState([])
@@ -34,45 +36,32 @@ const AdminDashboard = () => {
   dispatch(setCrops(cropList))
   dispatch(setOrder(orderList))
   dispatch(setUser(userList))
-  console.log(cropList, orderList);
+  const accessToken = localStorage.getItem('accessToken')
+  const decoded = jwtDecode(accessToken);
 
   // Recent Activity logic
   const allActivities = [
     ...cropList.map(crop => ({
       text: "New Crop Added: ",
       name: crop.name,
-      user: crop.formerId.name, 
+      user: crop?.formerId?.name,
       time: new Date(crop.createdAt),
     })),
     ...orderList.map(order => ({
       text: "New Order Placed: ",
       // name: order.crop.name,
-      user: order.buyer.name,
+      user: order?.buyer?.name,
       time: new Date(order.createdAt),
     }))
   ]
   const sortedActivities = allActivities.sort((a, b) => b.time - a.time); //a first elment of array, b last it find defference is + then 1st element is geater- this will sort in Descending order. it works like bouble sort
   const recentActivities = allActivities.slice(0, 4) //take only 1st five activites(recent)
+
+
   return (
     <div className="p-6 space-y-8">
       {/* Header Section */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-gray-500">Welcome back, Admin</p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="text-right">
-            <p className="font-bold text-gray-800">Administrator</p>
-            <p className="text-xs text-gray-500">admin@agrimanage.com</p>
-          </div>
-          <div className="h-10 w-10 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-bold">
-            AD
-          </div>
-        </div>
-      </div>
-
+      <AdminDashboardHeader page="Dashboard"/>
       {/* Stats Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Users Card */}
@@ -125,13 +114,13 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 text-sm text-gray-600">
-              {recentActivities.map(activity => (
-                <tr>
+              {recentActivities.map((activity,i) => (
+                <tr key={i}>
                   <td className="px-6 py-4">{activity.text} <span className="text-emerald-600 font-medium">{activity.name}</span></td>
                   <td className="px-6 py-4 text-center">{activity.user}</td>
-                   <td className="px-6 py-4 text-right">{formatDistanceToNow(activity.time,{ addSuffix: true })}</td> 
-                </tr> 
-              ))} {/*addSuffix- will add time ago */}            
+                  <td className="px-6 py-4 text-right">{formatDistanceToNow(activity.time, { addSuffix: true })}</td>
+                </tr>
+              ))} {/*addSuffix- will add time ago */}
             </tbody>
           </table>
         </div>

@@ -7,12 +7,12 @@ const MainLayout = () => {
 
   return (
     <div className="flex">
-         <AdminSidebar />
+      <AdminSidebar />
       <div className="content-area w-full">
         <Outlet /> {/* Saare pages (Orders, Crops) yahan render honge */}
       </div>
     </div>
-    
+
   )
 }
 

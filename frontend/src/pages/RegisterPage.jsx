@@ -79,7 +79,7 @@ const RegisterPage = () => {
                                 required
                                 value={formData.name}
                                 onChange={handleInputChange}
-                                placeholder="John Doe"
+                                placeholder="Amna Haq"
                                 className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
                             />
                         </div>

@@ -15,7 +15,7 @@ export const useGetAllOrders = () => {
             const response = await BaseApi.get(OrderEndPoints.order); 
             if (response) {
                 const orderList = response.data.allOrders;
-                localStorage.setItem("orderList",orderList);
+                localStorage.setItem("orderList",JSON.stringify(orderList));
                 return orderList;
             }
         } catch (err) {

@@ -15,7 +15,7 @@ export const useGetAllCrops = () => {
             const response = await BaseApi.get(CropEndPoints.crop);
             if (response) {
                 const cropsList = response.data.allCrops;
-                localStorage.setItem("cropsList",cropsList);
+                localStorage.setItem("cropsList",JSON.stringify(cropsList));
                 return cropsList;
             }
         } catch (err) {

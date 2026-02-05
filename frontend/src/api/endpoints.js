@@ -9,5 +9,7 @@ export const OrderEndPoints = {
     order:"/order"
 };
 export const UserEndPoints = {
-    user:"/user"
+    user:"/user",
+    editUser:(id)=>`/user/${id}`,
+    deleteUser:(id)=>`/user/${id}`,  
 };
