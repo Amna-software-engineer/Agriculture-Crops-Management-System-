@@ -18,7 +18,6 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = await login(formData);
-        console.log("api response ",data);
         
         if (data) {
             dispatch(setAuth(data.user));
@@ -26,8 +25,8 @@ const LoginForm = () => {
             if (data.user.role === "client") {
                 navigate("/dashboard/client");
             }
-            if (data.user.role === "farmer") {
-                navigate("/dashboard/farmer");
+            if (data.user.role === "former") {
+                navigate("/dashboard/former");
             }
             if (data.user.role === "broker") {
                 navigate("/dashboard/broker");
@@ -35,6 +34,7 @@ const LoginForm = () => {
             if (data.user.role === "admin") {
                 navigate("/dashboard/admin");
             }
+            
         }
     };
 

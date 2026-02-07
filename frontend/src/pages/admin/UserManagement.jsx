@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Search, Plus, Edit2, Trash2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
-import AdminDashboardHeader from '../../component/admin/adminDashboardHeader';
+import AdminDashboardHeader from '../../component/DashboardHeader';
 import { useNavigate } from 'react-router-dom';
 import EditUserModal from '../../component/admin/EditUserModal';
 import { useDeleteUser } from '../../api/user.api';
@@ -42,7 +42,7 @@ const UserManagement = () => {
     <>
       <div className="p-6 space-y-8">
         {/* Header Section */}
-        <AdminDashboardHeader page="Users" />
+        <AdminDashboardHeader page="Users"role={"Administrator"} />
         {/* Search and Add User Bar */}
         <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
 

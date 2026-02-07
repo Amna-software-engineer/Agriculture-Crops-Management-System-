@@ -1,13 +1,14 @@
 
 import { Outlet } from 'react-router-dom'
-import AdminSidebar from '../component/AdminSidebar'
+
+import Sidebar from '../component/Sidebar'
 
 const MainLayout = () => {
 
 
   return (
     <div className="flex">
-      <AdminSidebar />
+      <Sidebar />
       <div className="content-area w-full">
         <Outlet /> {/* Saare pages (Orders, Crops) yahan render honge */}
       </div>

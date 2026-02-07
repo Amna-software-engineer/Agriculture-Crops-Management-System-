@@ -3,10 +3,12 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import MainLayout from "./pages/MainLayout";
-import { ProtectAdminRoute } from "./component/admin/ProtectAdminRoute";
+import { ProtectAdminRoute, ProtectFormerRoute } from "./component/ProtectRoute";
 import UserManagement from "./pages/admin/UserManagement";
 import SystemCrops from "./pages/admin/SystemCrops";
-import EditUser from "./component/admin/EditUserModal";
+import FormerDashboard from "./pages/former/FormerDashboard";
+import FormerCrops from "./pages/former/FormerCrops";
+import FormerOrders from "./pages/former/FormerOrders";
 
 
 const router = createBrowserRouter([
@@ -30,9 +32,28 @@ const router = createBrowserRouter([
                 path: "/dashboard/admin/system-crops",
                 element: <ProtectAdminRoute><SystemCrops /></ProtectAdminRoute>,
             },
-            
+
         ],
     },
+    {
+        path: "/",
+        element: <MainLayout />,
+        children: [
+            {
+                path: "/dashboard/former",
+                element: <ProtectFormerRoute> <FormerDashboard /></ProtectFormerRoute>,
+            },
+            {
+                path: "/dashboard/former/my-crops",
+                element: <ProtectFormerRoute> <FormerCrops /></ProtectFormerRoute>,
+            },
+            {
+                path: "/dashboard/former/orders",
+                element: <ProtectFormerRoute> <FormerOrders /></ProtectFormerRoute>,
+            },
+        ]
+    },
+    ,
     {
         path: "/login",
         element: <LoginPage />,

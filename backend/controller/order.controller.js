@@ -1,6 +1,10 @@
 import Order from "../models/order.model.js";
 import User from "../models/auth.model.js";
 import crop from "../models/order.model.js";
+import jwt, { decode } from "jsonwebtoken";
+import dotenv from "dotenv"
+dotenv.config();
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "someaccesssecret";
 
 export const postOrder = async (req, res) => {
     try {
@@ -24,11 +28,24 @@ export const postOrder = async (req, res) => {
 }
 
 
+
 export const getOrders = async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
+    console.log("decoded ", decoded);
+
     try {
-        const allOrders = await Order.find().populate("buyer", "name").populate("crop", "name");
-        console.log("allorders ",allOrders);
-        
+        let allOrders =[];
+        if (decoded.role == "admin") {
+            allOrders = await Order.find().populate("buyer", "name").populate("crop", "name");
+
+        } else if (decoded.role == "former") {
+            allOrders = await Order.find({ buyer: decoded._id }).populate("buyer", "name").populate("crop", "name");
+
+        }
+        console.log("allorders ", allOrders);
+
         res.status(200).json({ success: true, message: "Orders featched Succesfuly", allOrders });
     } catch (error) {
         console.log("Error in Order Controller : ", error.message);
@@ -74,6 +91,20 @@ export const editOrder = async (req, res) => {
     try {
         const updatedOrder = await Order.findByIdAndUpdate(id, { buyer, crop, quantity, totalPrice, status, shippingAddress });
         res.status(200).json({ success: true, message: "Order updated Succesfuly", updatedOrder });
+    } catch (error) {
+        console.log("Error in Order Controller : ", error.message);
+        return res.status(500).json({
+            success: false,
+            error,
+        });
+    }
+}
+export const editOrderStatus = async (req, res) => {
+    const id = req.params.orderId;
+    const {  status } = req.body;
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(id, { status:status });
+        res.status(200).json({ success: true, message: "Order status updated Succesfuly", updatedOrder });
     } catch (error) {
         console.log("Error in Order Controller : ", error.message);
         return res.status(500).json({

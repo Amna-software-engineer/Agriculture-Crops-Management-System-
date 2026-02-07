@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
 import { Check, X, Trash2, Leaf } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
-import AdminDashboardHeader from '../../component/admin/adminDashboardHeader';
+import AdminDashboardHeader from '../../component/DashboardHeader';
 import { useSelector } from 'react-redux';
 import { useDeleteCrop, useEditCropStatus } from '../../api/crop.api';
 
 
 const SystemCrops = () => {
 const {editStatus}=useEditCropStatus()
-const {deleteUser}=useDeleteCrop()
+const {deleteCrop}=useDeleteCrop()
   const cropList = useSelector(state => state.crops.crops);
   // console.log(cropList);
   // funstion to handle edit status
   const HandleStatus = async(id,status) => {
-    const updatedCrop =await editStatus(id,{status: status});
+    await editStatus(id,{status: status});
   }
   const handleDelete = async(id) => {
     console.log("id ",id);
     
-    const updatedList =await deleteUser(id);
+    const updatedList =await deleteCrop(id);
      console.log("updatedList ", updatedList);
   }
 
   return (
     <div className="p-6 space-y-8">
       {/* Header Section */}
-      <AdminDashboardHeader page="Crops" />
+      <AdminDashboardHeader page="Crops" role={"Administrator"}/>
 
       {/* Main Table Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -47,28 +47,28 @@ const {deleteUser}=useDeleteCrop()
             </thead>
             <tbody className="divide-y divide-gray-50 text-sm">
               {cropList?.map((crop) => (
-                <tr key={crop._id} className="hover:bg-gray-50/50 transition-colors">
+                <tr key={crop?._id} className="hover:bg-gray-50/50 transition-colors">
                   {/* Crop Info column */}
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="font-bold text-gray-800">{crop.name}</span>
-                      <span className="text-xs text-gray-400 italic">{crop.cropType}</span>
+                      <span className="font-bold text-gray-800">{crop?.name}</span>
+                      <span className="text-xs text-gray-400 italic">{crop?.cropType}</span>
                     </div>
                   </td>
 
                   {/* Farmer info from Populate */}
                   <td className="px-6 py-4 text-gray-600">
                     <div className="flex flex-col">
-                      <span>{crop.formerId?.name || "Unknown Farmer"}</span>
-                      <span className="text-xs text-gray-400">{crop.location}</span>
+                      <span>{crop?.formerId?.name || "Unknown Farmer"}</span>
+                      <span className="text-xs text-gray-400">{crop?.location}</span>
                     </div>
                   </td>
 
                   {/* Quantity & Price */}
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="text-emerald-600 font-bold">{crop.quantity} kg</span>
-                      <span className="text-xs text-gray-400">Rs. {crop.price}</span>
+                      <span className="text-emerald-600 font-bold">{crop?.quantity} kg</span>
+                      <span className="text-xs text-gray-400">Rs. {crop?.price}</span>
                     </div>
                   </td>
 
@@ -80,7 +80,7 @@ const {deleteUser}=useDeleteCrop()
                             crop.status === 'Sold Out' ? 'bg-gray-100 text-gray-600 border-gray-200' :
                               'bg-blue-100 text-blue-600 border-blue-200'
                       }`}>
-                      {crop.status}
+                      {crop?.status}
                     </span>
                   </td>
 

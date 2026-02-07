@@ -17,9 +17,7 @@ export const useLogin = () => {
                 password,
             });
 
-            if (response.data) {
-                console.log("login response ",response);
-                
+            if (response.data) {           
                 const accessToken = response.data.accessToken;
 
                 if (!accessToken) {
@@ -66,7 +64,6 @@ export const useRegister = () => {
             });
 
             if (response.data) {
-                  console.log("response ",response);
                 toast.success("Registered successfully.");
                 return response.data;
             }

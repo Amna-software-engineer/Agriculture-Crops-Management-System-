@@ -17,7 +17,7 @@ export const useGetAllCrops = () => {
             const response = await BaseApi.get(CropEndPoints.crop);
             if (response) {
                 const cropsList = response.data.allCrops;
-                localStorage.setItem("cropsList",JSON.stringify(cropsList));
+                localStorage.setItem("cropsList", JSON.stringify(cropsList));
                 return cropsList;
             }
         } catch (err) {
@@ -31,32 +31,32 @@ export const useGetAllCrops = () => {
     return { loading, error, getCrops }
 }
 
-// custome hook to edit a crop from backend
+// custome hook to edit a crop stuts from backend
 export const useEditCropStatus = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const dispatch =useDispatch();
+    const dispatch = useDispatch();
 
     // function to edit User
-    const editStatus = async (id, {status}) => {
+    const editStatus = async (id, { status }) => {
         console.log("id", id);
         setLoading(true);
         setError(null);
         try {
-            const response = await BaseApi.patch(CropEndPoints.editCrop(id), {status});
+            const response = await BaseApi.patch(CropEndPoints.editCropStuts(id), { status });
 
             if (response.data) {
                 let updatedCrop = response.data.updatedCrop;
                 let cropList = JSON.parse(localStorage.getItem("cropsList"));
                 let updatedList = cropList.map(crop => {
                     console.log(crop);
-                    
-                    if (crop._id === updatedCrop._id) {       
+
+                    if (crop._id === updatedCrop._id) {
                         return { ...crop, status: updatedCrop.status }
                     }
                     return crop;
                 });
-               
+
                 // updatong the store to update UI
                 dispatch(setCrops(updatedList));
                 toast.success("Crop Updated succesfully.");
@@ -72,15 +72,89 @@ export const useEditCropStatus = () => {
     }
     return { loading, error, editStatus }
 }
-
-// custome hook to delete user from backend
-export const useDeleteCrop = () => {
-    const dispatch =useDispatch();
+// custome hook to edit a crop from backend
+export const useEditCrop = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    
+    const dispatch = useDispatch();
+
+    // function to edit User
+    const editCrop = async (id, { name, cropType, quantity, price, location, status }) => {
+        console.log("id", id);
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await BaseApi.patch(CropEndPoints.editCrop(id), { name, cropType, quantity, price, location, status });
+            console.log("response", response);
+            
+            if (response.data) {
+                let updatedCrop = response.data.updatedCrop;
+                let cropList = JSON.parse(localStorage.getItem("cropsList"));
+                let updatedList = cropList.map(crop => {
+                    crop._id === updatedCrop._id ? updatedCrop : crop
+                });
+
+                // updatong the store to update UI
+                dispatch(setCrops(updatedList));
+                toast.success("Crop Updated succesfully.");
+                return updatedCrop;
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message || err?.message || "Crop upadeting failed";
+            setError(message);
+            toast.error(message);
+        } finally {
+            setLoading(false)
+        }
+    }
+    return { loading, error, editCrop }
+}
+// custome hook to add a crop from backend
+export const useAddCrop = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+
     // function to add User
-    const deleteUser = async (id) => {
+    const addCrop = async ( { name, cropType, quantity, price, location, status, formerId  }) => {
+        setLoading(true);
+        setError(null); console.log("Add Crop.api ",{ name, cropType, quantity, price, location, status, formerId  });
+        
+        try {
+            const response = await BaseApi.post(CropEndPoints.crop,{ name, cropType, quantity, price, location, status, formerId  });
+            console.log("response", response);
+            
+            if (response.data) {
+                let newCrop = response.data.newCrop;
+                let cropList = JSON.parse(localStorage.getItem("cropsList"));
+                let updatedList = cropList.map(crop => {
+                    crop._id === newCrop._id ? newCrop : crop
+                });
+
+                // updatong the store to update UI
+                dispatch(setCrops(updatedList));
+                toast.success("Crop Added succesfully.");
+                return updatedCrop;
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message || err?.message || "Crop upadeting failed";
+            setError(message);
+            toast.error(message);
+        } finally {
+            setLoading(false)
+        }
+    }
+    return { loading, error, addCrop }
+}
+
+// custome hook to delete crop from backend
+export const useDeleteCrop = () => {
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    // function to add crop
+    const deleteCrop = async (id) => {
         setLoading(true);
         setError(null);
         try {
@@ -89,7 +163,7 @@ export const useDeleteCrop = () => {
 
             if (response.data) {
                 let deletedCrop = response.data.deletedCrop;
-              let cropsList = JSON.parse(localStorage.getItem("cropsList"));
+                let cropsList = JSON.parse(localStorage.getItem("cropsList"));
                 let updatedList = cropsList.filter(crop => crop._id !== deletedCrop._id);
                 toast.success("Crop Deleted succesfully.");
                 dispatch(setCrops(updatedList));
@@ -103,5 +177,5 @@ export const useDeleteCrop = () => {
             setLoading(false)
         }
     }
-    return { loading, error, deleteUser }
+    return { loading, error, deleteCrop }
 }

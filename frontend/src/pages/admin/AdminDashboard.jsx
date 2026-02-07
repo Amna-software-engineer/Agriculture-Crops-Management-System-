@@ -9,9 +9,9 @@ import { setCrops } from '../../features/crops.slice';
 import { setOrder } from '../../features/order.slice';
 import { setUser } from '../../features/user.slice';
 import { formatDistanceToNow } from "date-fns"
-import { jwtDecode } from 'jwt-decode';
-import AdminDashboardHeader from '../../component/admin/adminDashboardHeader';
+
 import { useLocation } from 'react-router-dom';
+import DashboardHeader from '../../component/DashboardHeader';
 
 const AdminDashboard = () => {
   const [cropList, setCropList] = useState([])
@@ -24,19 +24,19 @@ const AdminDashboard = () => {
   const location = useLocation();
   useEffect(() => {
     const fetchAllData = async () => {
-      // Data fetch karein
+      //  fetching Data
       const [crops, orders, users] = await Promise.all([
         getCrops(),
         getOrders(),
         getUsers()
       ]);
 
-      // Local State update karein
+      // updating local state
       setCropList(crops || []);
       setorderList(orders || []);
       setUserList(users || []);
 
-      // ✅ Dispatch hamesha useEffect ke andar hona chahiye
+      //updating store 
       dispatch(setCrops(crops || []));
       dispatch(setOrder(orders || []));
       dispatch(setUser(users || []));
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
   // Recent Activity logic
   const allActivities = [
     ...cropList.map(crop => ({
-      text: "New Crop Listed ",
+      action: "New Crop Listed ",
       detail: crop.name,
       user: crop?.formerId?.name || "Farmer",
       time: new Date(crop.createdAt),
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
     })),
 
     ...orderList.map(order => ({
-      text: "New Order Placed ",
+      action: "New Order Placed ",
       detail: `Order #${order._id.slice(-5)}`,
       user: order?.buyer?.name || "Customer",
       time: new Date(order.createdAt),
@@ -91,7 +91,7 @@ const AdminDashboard = () => {
   return (
     <div className="p-6 space-y-8">
       {/* Header Section */}
-      <AdminDashboardHeader page="Dashboard" />
+      <DashboardHeader page="Dashboard" role={"Administrator"}/>
       {/* Stats Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Users Card */}
@@ -153,7 +153,7 @@ const AdminDashboard = () => {
                         {getActivityIcon(activity.type)}
                       </div>
                       <span>
-                        {activity.text}
+                        {activity.action}
                         <span className="text-emerald-600 font-medium">
                           {activity.detail || activity.name}
                         </span>
