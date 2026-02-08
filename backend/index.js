@@ -8,6 +8,7 @@ import { ConnectDb } from "./db/db.js";
 import cropRouter from "./router/crop.router.js"
 import userRouter from "./router/user.router.js"
 import orderRouter from "./router/order.router.js"
+import cartRouter from "./router/cart.router.js"
 const PORT = 3000;
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use("/api/auth", AuthRouter);
 app.use("/api",cropRouter);
 app.use("/api",userRouter);
 app.use("/api",orderRouter);
+app.use("/api",cartRouter);
 
 
 app.listen(PORT, async () => {

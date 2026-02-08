@@ -6,32 +6,32 @@ import { useEditOrderStatus } from '../../api/order.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOrder } from '../../features/order.slice';
 
-const FormerOrders = () => {
+const FarmerOrders = () => {
   const { editStatus } = useEditOrderStatus();
   const orderList = useSelector(state => state.orders?.orders)
+  const user = useSelector(state => state.auth.currUser);
   const dispatch = useDispatch()
   // funstion to handle edit status
   const HandleStatus = async (status, id) => {
     console.log("status ", status);
-    const updatedList = await editStatus({ status: status }, id);
-    dispatch(setOrder(updatedList));
+    await editStatus({ status: status }, id);
   }
 
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen ">
+    <div className="p-6 bg-gray-50 h-screen flex flex-col">
       {/* Header Section */}
-      <DashboardHeader page={"Orders"} role={"Former"} />
+      <DashboardHeader page={"Orders"} role={"Farmer"} />
 
       {/* Orders Table Container */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mt-8">
-        <div className="p-6 border-b border-gray-50 flex justify-between items-center">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col flex-1 overflow-hidden mt-8">
+        <div className="p-6 border-b border-gray-50 flex justify-between items-center shrink-0">
           <h3 className="font-bold text-gray-800 text-lg">All Crop Listings</h3>
           <span className="text-sm text-gray-500 font-medium">{orderList?.length || 0} Total Listings</span>
         </div>
-        <div className="overflow-x-auto">
+        <div className="flex-1 overflow-auto px-4 custom-scrollbar">
           <table className="w-full text-left">
-            <thead className="bg-gray-50/50 text-gray-400 text-[10px] uppercase font-bold tracking-wider">
+            <thead className="bg-gray-50 z-10 text-gray-400 text-[10px] uppercase font-bold tracking-wider sticky top-0">
               <tr>
                 <th className="px-6 py-5">Order ID</th>
                 <th className="px-6 py-5">Crop Info</th>
@@ -47,47 +47,51 @@ const FormerOrders = () => {
               {orderList ? orderList.map((order) => (
                 <tr key={order._id} className="hover:bg-gray-50/30">
                   {/* Order ID */}
-                  <td className="px-6 py-6">
-                    <p className="font-bold text-slate-400">#{order?._id.slice(0, 5)}</p>
-                    <p className="text-[10px] text-gray-300 font-bold">{order.time}</p>
+                  <td className="px-6 py-6 font-medium">
+                    <p className="font-bold text-slate-400">#{order?._id.slice(-6)}</p>
                   </td>
 
                   {/* Crop Info */}
                   <td className="px-6 py-6">
-                    <p className="font-bold text-slate-800">{order.crop.name}</p>
-                    <p className="text-emerald-500 font-bold text-xs">{order.quantity}</p>
+                    {order.items?.filter(item => item.crop?.farmerId === user?._id).map((item, idx) => (
+                      <div key={idx} className="flex flex-col mb-1 last:mb-0">
+                        <p className="font-bold text-slate-800">{item.crop?.name}</p>
+                        <p className="text-emerald-500 font-bold text-xs">{item.quantity} Units</p>
+                      </div>
+                    ))}
                   </td>
 
                   {/* Buyer */}
                   <td className="px-6 py-6 text-slate-500 font-medium">
-                    {order.buyer.name}
+                    {order.buyer?.name}
                   </td>
 
                   {/* Price */}
                   <td className="px-6 py-6 font-bold text-slate-800">
-                    {order.totalPrice}
+                    Rs. {order.totalPrice}
                   </td>
 
                   {/* Status Badge */}
                   <td className="px-6 py-6">
-                    <span className={`flex items-center gap-1.5 w-fit px-3 py-1 rounded-full text-[9px] font-bold border ${order.status === 'delivered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : order.status === 'shipped' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-orange-50 text-orange-600 border-orange-100'}`}>
+                    <span className={`flex items-center gap-1.5 w-fit px-3 py-1 rounded-full text-[9px] font-bold border capitalize ${order.status === 'delivered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : order.status === 'shipped' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-orange-50 text-orange-600 border-orange-100'}`}>
                       {order.status === 'pending' && <Clock size={12} />}
                       {order.status === 'shipped' && <Truck size={12} />}
                       {order.status === 'delivered' && <CheckCircle size={12} />}
-                      {order.status}
+                      {order.status === 'pending' ? 'Processing' : order.status}
                     </span>
                   </td>
 
                   {/* Update Status Icons */}
                   <td className="px-6 py-6">
                     <div className="flex justify-center gap-4">
-                      <button className="text-orange-300 hover:text-orange-500 transition-colors" onClick={() => HandleStatus("pending", order._id)}><Clock size={18} /></button>
-                      <button className="text-blue-300 hover:text-blue-500 transition-colors" onClick={() => HandleStatus("shipped", order._id)}><Truck size={18} /></button>
-                      <button className="text-emerald-300 hover:text-emerald-500 transition-colors" onClick={() => HandleStatus("delivered", order._id)} ><CheckCircle size={18} /></button>
+                      <button className="text-orange-300 hover:text-orange-500 transition-colors" title="Process" onClick={() => HandleStatus("pending", order._id)}><Clock size={18} /></button>
+                      <button className="text-blue-300 hover:text-blue-500 transition-colors" title="Ship" onClick={() => HandleStatus("shipped", order._id)}><Truck size={18} /></button>
+                      <button className="text-emerald-300 hover:text-emerald-500 transition-colors" title="Deliver" onClick={() => HandleStatus("delivered", order._id)} ><CheckCircle size={18} /></button>
                     </div>
                   </td>
                 </tr>
-              )) : /* No Order Found */
+              )) :
+                /* No Order Found */
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center justify-center gap-2">
@@ -111,4 +115,4 @@ const FormerOrders = () => {
   );
 };
 
-export default FormerOrders;
+export default FarmerOrders;

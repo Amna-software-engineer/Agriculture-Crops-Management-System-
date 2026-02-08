@@ -46,9 +46,6 @@ const AdminDashboard = () => {
   }, [location.pathname]);
 
 
-  const accessToken = localStorage.getItem('accessToken')
-
-
   // Recent Activity logic
   const allActivities = [
     ...cropList.map(crop => ({
@@ -68,7 +65,7 @@ const AdminDashboard = () => {
     })),
 
     ...userList.map(user => ({
-      text: "New User Registered ",
+      action: "New User Registered ",
       detail: user.role,
       user: user.name,
       time: new Date(user.createdAt),
@@ -76,7 +73,7 @@ const AdminDashboard = () => {
     }))
   ]
   const sortedActivities = allActivities.sort((a, b) => b.time - a.time); //a first elment of array, b last it find defference is + then 1st element is geater- this will sort in Descending order. it works like bouble sort
-  const recentActivities = allActivities.slice(0, 4) //take only 1st five activites(recent)
+  const recentActivities = sortedActivities.slice(0, 4) //take only 1st five activites(recent)
   const getActivityIcon = (type) => {
     switch (type) {
       case 'crop': return <Leaf className="text-emerald-500" />;
@@ -144,7 +141,7 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 text-sm text-gray-600">
-              {recentActivities.map((activity, i) => (
+              {Array.isArray(recentActivities) && recentActivities?.map((activity, i) => (
                 <tr key={i} className="hover:bg-gray-50/50 transition-colors">
                   {/* Action Column with Icon */}
                   <td className="px-6 py-3">
@@ -168,7 +165,7 @@ const AdminDashboard = () => {
 
                   {/* Time Column */}
                   <td className="px-6 py-3 text-right text-gray-400 text-xs">
-                    {formatDistanceToNow(activity.time, { addSuffix: true })}
+                    {/* {activity.time ? formatDistanceToNow(activity.time, { addSuffix: true }) : "N/A"} */}
                   </td>
                 </tr>
               ))}

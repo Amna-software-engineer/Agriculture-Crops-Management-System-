@@ -3,7 +3,7 @@ import { BaseApi } from "./base.api";
 import { AuthEndPoints, CropEndPoints, UserEndPoints } from "./endpoints";
 import { toast } from "react-toastify";
 import { setUser } from "../features/user.slice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // custome hook to get user from backend
 export const useGetAllUsers = () => {
@@ -34,36 +34,32 @@ export const useGetAllUsers = () => {
 export const useEditlUser = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const dispatch =useDispatch();
+    const dispatch = useDispatch();
+    const userList = useSelector(state => state.users.Users);
 
     // function to edit User
     const editUser = async (id, formData) => {
         console.log("id", id);
-
         setLoading(true);
         setError(null);
         try {
             const response = await BaseApi.patch(UserEndPoints.editUser(id), formData);
-            console.log("response ", response);
-
-            if (response) {
-
-                let updatedUser = response.data.updatedUser;
-                let userList = JSON.parse(localStorage.getItem("userList"));
-                let updatedList = userList.map(user => {
-                    if (user._id == updatedUser._id) {
-                        return { ...user, name: updatedUser.name, role: updatedUser.role, status: updatedUser.status }
+            if (response.data) {
+                const updatedUser = response.data.updatedUser;
+                const updatedList = userList.map(user => {
+                    if (user._id === id) {
+                        return { ...user, ...formData, ...updatedUser }
                     }
                     return user;
                 });
-                console.log("updated user ", updatedUser);
-                // updatong the store to update UI
-                   dispatch(setUser(updatedList));
-                toast.success("User Updated succesfully.");
+
+                // updating the store to update UI
+                dispatch(setUser(updatedList));
+                toast.success("User Updated Successfully.");
                 return updatedList;
             }
         } catch (err) {
-            const message = err?.response?.data?.message || err?.message || "User upadeting failed";
+            const message = err?.response?.data?.message || err?.message || "User updating failed";
             setError(message);
             toast.error(message);
         } finally {
@@ -74,11 +70,13 @@ export const useEditlUser = () => {
 }
 // custome hook to add new user from backend
 export const useAddUser = () => {
-        const dispatch =useDispatch();
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const userList = useSelector(state => state.users.Users);
+
     // function to add User
-    const addUser = async ({ name, email, password, role, status}) => {
+    const addUser = async ({ name, email, password, role, status }) => {
         setLoading(true);
         setError(null);
         try {
@@ -89,18 +87,17 @@ export const useAddUser = () => {
                 role,
                 status
             });
-            if (response) {
-                let newUser = response.data.newUser;
-                let userList = JSON.parse(localStorage.getItem("userList"));
-                let updatedList = [...userList,newUser];
-                    return updatedList;
-                };
-                // updatong the state to update UI
-                   dispatch(setUser(updatedList));
-                toast.success("User Added succesfully.");
+            if (response.data) {
+                const newUser = response.data.newUser;
+                const updatedList = [...userList, newUser];
+
+                // updating the state to update UI
+                dispatch(setUser(updatedList));
+                toast.success("User Added Successfully.");
                 return updatedList;
+            }
         } catch (err) {
-            const message = err?.response?.data?.message || err?.message || "User upadeting failed";
+            const message = err?.response?.data?.message || err?.message || "User adding failed";
             setError(message);
             toast.error(message);
         } finally {
@@ -111,11 +108,11 @@ export const useAddUser = () => {
 }
 // custome hook to delete user from backend
 export const useDeleteUser = () => {
-    const dispatch =useDispatch();
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    
-    // function to add User
+    const userList = useSelector(state => state.users.Users);
+
+    // function to delete User
     const deleteUser = async (id) => {
         setLoading(true);
         setError(null);
@@ -123,11 +120,9 @@ export const useDeleteUser = () => {
             const response = await BaseApi.delete(UserEndPoints.deleteUser(id));
             console.log("deleted response ", response);
 
-            if (response) {
-                let deletedUser = response.data.deletedUser;
-              let userList = JSON.parse(localStorage.getItem("userList"));
-                let updatedList = userList.filter(user => user._id !== deletedUser._id);
-                toast.success("User Deleted succesfully.");
+            if (response.data) {
+                const updatedList = userList.filter(user => user._id !== id);
+                toast.success("User Deleted Successfully.");
                 dispatch(setUser(updatedList));
                 return updatedList;
             }

@@ -1,21 +1,25 @@
-import User from "../models/auth.model.js"
 import Crops from "../models/crop.model.js"
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
 dotenv.config();
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "someaccesssecret";
 
 export const postCrops = async (req, res) => {
-    
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
     try {
-        const { name, cropType, quantity, price, location, status, formerId } = req.body;
-        if (!name || !cropType || !quantity || !price || !location || !status || !formerId ) {
+        const { name, cropType, quantity, price, location, status } = req.body;
+        const farmerId = decoded._id;
+        console.log(req.body)
+        if (!name || !cropType || !quantity || !price || !location || !status) {
             return res.status(401).json({
                 success: false,
                 message: "Please provide all the fields",
             });
         }
-        const newCrop = await Crops.create({ name, cropType, quantity, price, location, status, formerId });
+
+        const newCrop = await Crops.create({ name, cropType, quantity, price, location, status, farmerId });
         res.status(201).json({ success: true, message: "Crop Added Succesfuly", newCrop });
 
     } catch (error) {
@@ -31,11 +35,11 @@ export const getCrops = async (req, res) => {
     const token = authHeader && authHeader.split(" ")[1];
     const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
     try {
-        let allCrops =[];
-        if (decoded.role == "admin") {
-            allCrops = await Crops.find().populate("formerId", "name");
-        } else if (decoded.role == "former") {
-            allCrops = await Crops.find({ formerId: decoded._id }).populate("formerId", "name");
+        let allCrops = [];
+        if (decoded.role !== "farmer") {
+            allCrops = await Crops.find().populate("farmerId", "name");
+        } else if (decoded.role == "farmer") {
+            allCrops = await Crops.find({ farmerId: decoded._id }).populate("farmerId", "name");
         }
         res.status(200).json({ success: true, message: "Crops featched Succesfuly", allCrops });
     } catch (error) {
@@ -49,7 +53,7 @@ export const getCrops = async (req, res) => {
 export const getSingleCrop = async (req, res) => {
     const id = req.params.id;
     try {
-        const singleCrop = await Crops.findOne({ id }).populate("formerId", "name");
+        const singleCrop = await Crops.findOne({ id }).populate("farmerId", "name");
         if (singleCrop) {
             return res.status(200).json({ success: true, message: "Crop featched Succesfuly", singleCrop });
         } else {
@@ -85,9 +89,9 @@ export const deleteCrops = async (req, res) => {
 }
 export const editCrop = async (req, res) => {
     const id = req.params.id;
-    const { name, cropType, quantity, price, location, status, formerId, imgURL } = req.body;
+    const { name, cropType, quantity, price, location, status, farmerId, imgURL } = req.body;
     try {
-        const updatedCrop = await Crops.findByIdAndUpdate(id, { name, cropType, quantity, price, location, status, formerId, imgURL });
+        const updatedCrop = await Crops.findByIdAndUpdate(id, { name, cropType, quantity, price, location, status, farmerId, imgURL });
         res.status(200).json({ success: true, message: "Crops updated Succesfuly", updatedCrop });
     } catch (error) {
         console.log("Error in Crops Controller : ", error.message);

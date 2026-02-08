@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../api/auth.api";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../features/auth.slice";
+import { useGetItemsFromCart } from "../api/cart.api";
+import { setCartFromBackend } from "../features/cart.slice";
 
 const LoginForm = () => {
     const dispatch = useDispatch();
@@ -14,19 +16,23 @@ const LoginForm = () => {
     });
 
     const { login, loading } = useLogin();
+    const { getItems } = useGetItemsFromCart();
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = await login(formData);
-        
+        await getItems({ buyer: data.user._id });
+
         if (data) {
             dispatch(setAuth(data.user));
 
             if (data.user.role === "client") {
-                navigate("/dashboard/client");
+             navigate("/dashboard/client");
             }
-            if (data.user.role === "former") {
-                navigate("/dashboard/former");
+            
+            if (data.user.role === "farmer") {
+                navigate("/dashboard/farmer");
             }
             if (data.user.role === "broker") {
                 navigate("/dashboard/broker");

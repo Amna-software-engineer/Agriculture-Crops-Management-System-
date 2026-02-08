@@ -6,8 +6,8 @@ import { setCrops } from '../../features/crops.slice';
 
 
 const EditCropModal = ({ crop, isModelOpen, setisModelOpen, isAdd }) => {
-  const formerId = useSelector(state => state.auth.currUser._id);
-  console.log("formerId ", formerId);
+  const farmerId = useSelector(state => state.auth.currUser._id);
+  console.log("farmerId ", farmerId);
   const [formData, setFormData] = useState({
     name: crop?.name || '',
     cropType: crop?.cropType || 'Grain',
@@ -15,33 +15,25 @@ const EditCropModal = ({ crop, isModelOpen, setisModelOpen, isAdd }) => {
     price: crop?.price || '',
     location: crop?.location || '',
     status: crop?.status || 'Pending',
-    formerId: formerId && formerId,
+    farmerId: farmerId && farmerId,
   });
 
   if (!isModelOpen) return null;
 
   const { editCrop } = useEditCrop();
   const { addCrop } = useAddCrop();
-  const { getCrops } = useGetAllCrops();
-  const dispatch = useDispatch();
 
   const handleEdit = async (formData) => {
-
     const { name, cropType, quantity, price, location, status } = formData;
     await editCrop(crop._id, { name, cropType, quantity, price, location, status });
     setisModelOpen(false);
-    const data = await getCrops();
-    dispatch(setCrops(data));
   };
 
   const handleAdd = async (formData) => {
     console.log("handle add called", formData);
-
     const { name, cropType, quantity, price, location, status } = formData;
-    await addCrop({ name, cropType, quantity, price, location, status,formerId });
+    await addCrop({ name, cropType, quantity, price, location, status, farmerId });
     setisModelOpen(false);
-    const data = await getCrops();
-    dispatch(setCrops(data));
   };
 
   return (

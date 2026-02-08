@@ -6,7 +6,7 @@ import { setUser } from '../../features/user.slice'
 
 const EditUserModal = ({ user, isModelOpen, setisModelOpen, isAdd }) => {
 
-  
+
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: "example@gmail.com",
@@ -23,19 +23,14 @@ const EditUserModal = ({ user, isModelOpen, setisModelOpen, isAdd }) => {
   const dispatch = useDispatch()
 
   const handleEdit = async (formData) => {
-    const response = await editUser(user._id, formData);
+    await editUser(user._id, formData);
     setisModelOpen(false);
-    const users = await getUsers();
-    dispatch(setUser(users));
   }
 
   const handleAdd = async (formData) => {
     const { name, email, password, role, status } = formData;
-
-    const response = await addUser({ name, email, password, role, status, formerId });
+    await addUser({ name, email, password, role, status });
     setisModelOpen(false);
-    const users = await getUsers();
-    dispatch(setUser(users));
   }
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">

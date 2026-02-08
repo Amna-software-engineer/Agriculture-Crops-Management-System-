@@ -10,7 +10,7 @@ import { setOrder } from '../../features/order.slice';
 import { formatDistanceToNow } from 'date-fns';
 
 
-const FormerDashboard = () => {
+const FarmerDashboard = () => {
   let [cropList, setCropList] = useState([])
   let [orderList, setorderList] = useState([])
   const dispatch = useDispatch();
@@ -178,4 +178,4 @@ const getActivityIcon = (type) => {
   );
 };
 
-export default FormerDashboard
+export default FarmerDashboard;

@@ -17,3 +17,10 @@ export const UserEndPoints = {
     editUser: (id) => `/user/${id}`,
     deleteUser: (id) => `/user/${id}`,
 };
+export const CartEndPoints = {
+    cart: "/cart",
+    getcart: (buyer) => `/cart/${buyer}`,
+    editcart: (buyer) => `/cart/${buyer}`,
+    deleteItem: (itemId) => `/cart/${itemId}`,
+};
+

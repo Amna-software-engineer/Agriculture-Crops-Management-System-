@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     role: {
         type: String,
-        enum: ["former", "admin", "broker", "client"],
+        enum: ["farmer", "admin", "broker", "client"],
         default: "client",
         required: true,
     },
@@ -17,7 +17,7 @@ const UserSchema = new mongoose.Schema({
         default: "pending",
         required: true,
     },
-},{timestamps:true});
+}, { timestamps: true });
 
 
 UserSchema.pre("save", async function () {

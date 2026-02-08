@@ -8,7 +8,7 @@ const cropSlice = createSlice({
     reducers: {
         setCrops: (state, action) => {
             state.crops = action.payload;
-            localStorage.setItem("orderList", JSON.stringify(action.payload));
+            localStorage.setItem("cropsList", JSON.stringify(action.payload));
         },
     },
 });

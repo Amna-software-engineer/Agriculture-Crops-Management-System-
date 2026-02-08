@@ -25,11 +25,7 @@ const RegisterPage = () => {
     const navigate = useNavigate();
 
     const roles = [
-        {
-            id: "client",
-            icon: <ShoppingBag size={18} />,
-            desc: "Buy fresh crops",
-        },
+        { id: "client", icon: <ShoppingBag size={18} />, desc: "Buy fresh crops", },
         { id: "farmer", icon: <Leaf size={18} />, desc: "Sell your harvest" },
         { id: "broker", icon: <Briefcase size={18} />, desc: "Manage trades" },
         { id: "admin", icon: <UserCircle size={18} />, desc: "System control" },

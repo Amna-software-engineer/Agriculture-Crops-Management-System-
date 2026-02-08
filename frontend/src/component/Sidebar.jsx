@@ -1,5 +1,5 @@
 import React, { use } from 'react';
-import { LayoutDashboard, Users, Leaf, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Leaf, LogOut, Menu, X, Package, Settings } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -31,44 +31,66 @@ const AdminSidebar = () => {
           </div>
           <div>
             <h1 className="text-white font-bold text-xl tracking-tight">AgriManage</h1>
-            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{user.role.toUpperCase()} Panel</p>
+            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{user?.role?.toUpperCase()} Panel</p>
           </div>
         </div>
 
         {/* Navigation Links */}
         <nav className="space-y-2">
+          {/* --- DASHBOARD / MARKETPLACE LINK --- */}
           <Link
-            to={user.role == "admin" && "/dashboard/admin" || user.role == "former" && "/dashboard/former"}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin')
-              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-              : 'hover:bg-gray-800 hover:text-gray-200'
+            to={
+              (user?.role === "admin" && "/dashboard/admin") ||
+              (user?.role === "farmer" && "/dashboard/farmer") ||
+              (user?.role === "client" && "/dashboard/client")
+            }
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin') || isActive('/dashboard/farmer') || isActive('/dashboard/client') === true && !window.location.pathname.includes('orders')
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
+                : 'hover:bg-gray-800 hover:text-gray-200'
               }`}
           >
             <LayoutDashboard size={20} />
-            <span className="font-medium">Dashboard</span>
+            <span className="font-medium">
+              {user?.role === "client" ? "Marketplace" : "Dashboard"}
+            </span>
           </Link>
 
+          {/* --- SECOND LINK: User Management (Admin) / My Crops (Farmer) / My Orders (Client) --- */}
           <Link
-            to={user.role == "admin" && "/dashboard/admin/user-managment" || user.role == "former" && "/dashboard/former/my-crops"}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin/user-managment')
-              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-              : 'hover:bg-gray-800 hover:text-gray-200'
+            to={
+              (user?.role === "admin" && "/dashboard/admin/user-managment") ||
+              (user?.role === "farmer" && "/dashboard/farmer/my-crops") ||
+              (user?.role === "client" && "/dashboard/client/my-orders")
+            }
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin/user-managment') || isActive('/dashboard/farmer/my-crops') || isActive('/dashboard/client/my-orders')
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
+                : 'hover:bg-gray-800 hover:text-gray-200'
               }`}
           >
-            <Users size={20} />
-            <span className="font-medium">{user.role == "admin" && "User Management" || user.role == "former" && "My Crops"} </span>
-
+            {user?.role === "admin" ? <Users size={20} /> : user?.role === "client" ? <Package size={20} /> : <Leaf size={20} />}
+            <span className="font-medium">
+              {(user?.role === "admin" && "User Management") ||
+                (user?.role === "farmer" && "My Crops") ||
+                (user?.role === "client" && "My Orders")}
+            </span>
           </Link>
 
+          {/* --- THIRD LINK: System Crops (Admin) / Orders (Farmer) / Profile & Settings (Client) --- */}
           <Link
-            to={user.role == "admin" && "/dashboard/admin/system-crops" || user.role == "former" && "/dashboard/former/orders"}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin/system-crops')
-              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-              : 'hover:bg-gray-800 hover:text-gray-200'
+            to={
+              (user?.role === "admin" && "/dashboard/admin/system-crops") ||
+              (user?.role === "farmer" && "/dashboard/farmer/orders") 
+            }
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin/system-crops') || isActive('/dashboard/farmer/orders') }
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
+                : 'hover:bg-gray-800 hover:text-gray-200'
               }`}
           >
-            <Leaf size={20} />
-            <span className="font-medium"> {user.role == "admin" && "System Crops" || user.role == "former" && "Orders"} </span>
+            {user?.role !== "client" && <Leaf size={20} />} 
+            <span className="font-medium">
+              {(user?.role === "admin" && "System Crops") ||
+                (user?.role === "farmer" && "Orders") }
+            </span>
           </Link>
         </nav>
 

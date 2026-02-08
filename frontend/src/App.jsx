@@ -3,15 +3,19 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import MainLayout from "./pages/MainLayout";
-import { ProtectAdminRoute, ProtectFormerRoute } from "./component/ProtectRoute";
+import { ProtectAdminRoute, ProtectClientRoute, ProtectFarmerRoute } from "./component/ProtectRoute";
 import UserManagement from "./pages/admin/UserManagement";
 import SystemCrops from "./pages/admin/SystemCrops";
-import FormerDashboard from "./pages/former/FormerDashboard";
-import FormerCrops from "./pages/former/FormerCrops";
-import FormerOrders from "./pages/former/FormerOrders";
+import FarmerDashboard from "./pages/farmer/FarmerDashboard";
+import FarmerCrops from "./pages/farmer/FarmerCrops";
+import FarmerOrders from "./pages/farmer/FarmerOrders";
+import ClientMarketPlace from "./pages/client/ClientMarketPlace";
+import ClientMyOrder from "./pages/client/ClientMyOrder";
+
 
 
 const router = createBrowserRouter([
+    // admin routes
     {
         path: "/",
         element: <MainLayout />,
@@ -35,25 +39,42 @@ const router = createBrowserRouter([
 
         ],
     },
+    // farmer routes
     {
         path: "/",
         element: <MainLayout />,
         children: [
             {
-                path: "/dashboard/former",
-                element: <ProtectFormerRoute> <FormerDashboard /></ProtectFormerRoute>,
+                path: "/dashboard/farmer",
+                element: <ProtectFarmerRoute> <FarmerDashboard /></ProtectFarmerRoute>,
             },
             {
-                path: "/dashboard/former/my-crops",
-                element: <ProtectFormerRoute> <FormerCrops /></ProtectFormerRoute>,
+                path: "/dashboard/farmer/my-crops",
+                element: <ProtectFarmerRoute> <FarmerCrops /></ProtectFarmerRoute>,
             },
             {
-                path: "/dashboard/former/orders",
-                element: <ProtectFormerRoute> <FormerOrders /></ProtectFormerRoute>,
+                path: "/dashboard/farmer/orders",
+                element: <ProtectFarmerRoute> <FarmerOrders /></ProtectFarmerRoute>,
             },
         ]
     },
-    ,
+    // client
+    {
+        path: "/",
+        element: <MainLayout />,
+        children: [
+            {
+                path: "/dashboard/client",
+                element: <ProtectClientRoute> <ClientMarketPlace /></ProtectClientRoute>,
+            },
+            {
+                path: "/dashboard/client/my-orders",
+                element: <ProtectClientRoute> <ClientMyOrder /></ProtectClientRoute>,
+            },
+           
+        ]
+    },
+
     {
         path: "/login",
         element: <LoginPage />,

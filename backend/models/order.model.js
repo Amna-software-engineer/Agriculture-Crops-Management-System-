@@ -1,24 +1,28 @@
 import mongoose from "mongoose";
 const orderSchema = new mongoose.Schema({
-    buyer: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "UserModel", 
-        required: true 
+    buyer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserModel",
+        required: true
     },
-    crop: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "CropModel", 
-        required: true 
-    },
-    quantity: { type: Number, required: true },
+   items: [{
+        crop: { type: mongoose.Schema.Types.ObjectId, ref: "CropModel" },
+        quantity: { type: Number, required: true }
+    }]
+    ,
+    // quantity: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
-    status: { 
-        type: String, 
-        enum: ["pending", "shipped", "delivered"], 
-        required: true 
+    status: {
+        type: String,
+        enum: ["pending", "shipped", "delivered"],
+        default: "pending",
     },
-    shippingAddress: { type: String, required: true }
-},{timestamps:true})
+    shippingAddress: {
+        address: String,
+        city: String,
+        phone: String
+    }
+}, { timestamps: true })
 
-const model = mongoose.model("orderModel",orderSchema);
+const model = mongoose.model("orderModel", orderSchema);
 export default model;
