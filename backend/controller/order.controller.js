@@ -39,8 +39,23 @@ export const getOrders = async (req, res) => {
 
     try {
         let allOrders = [];
-        if (decoded.role == "admin") {
-            allOrders = await Order.find().populate("buyer", "name").populate("items.crop", "name");
+        if (decoded.role == "admin" || decoded.role == "broker") {
+          allOrders = await Order.find()
+        .populate({
+            path: "buyer",
+            model: "UserModel", // Ensure exact model name
+            select: "name email"
+        })
+        .populate({
+            path: "items.crop",
+            model: "CropModel", // Ensure exact model name
+            select: "name price farmerId",
+            populate: {
+                path: "farmerId",
+                model: "UserModel", // Deep populate farmer from crop
+                select: "name email"
+            }
+        });
 
         } else if (decoded.role == "farmer") {
             // 1. Find all crops belonging to this farmer

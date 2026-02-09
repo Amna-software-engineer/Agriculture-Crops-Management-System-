@@ -110,6 +110,7 @@ export const useAddUser = () => {
 export const useDeleteUser = () => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+        const [error, setError] = useState(null);
     const userList = useSelector(state => state.users.Users);
 
     // function to delete User

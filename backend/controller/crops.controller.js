@@ -41,6 +41,7 @@ export const getCrops = async (req, res) => {
         } else if (decoded.role == "farmer") {
             allCrops = await Crops.find({ farmerId: decoded._id }).populate("farmerId", "name");
         }
+        console.log("allCrops ", allCrops);
         res.status(200).json({ success: true, message: "Crops featched Succesfuly", allCrops });
     } catch (error) {
         console.log("Error in Crops Controller : ", error.message);
@@ -50,26 +51,7 @@ export const getCrops = async (req, res) => {
         });
     }
 }
-export const getSingleCrop = async (req, res) => {
-    const id = req.params.id;
-    try {
-        const singleCrop = await Crops.findOne({ id }).populate("farmerId", "name");
-        if (singleCrop) {
-            return res.status(200).json({ success: true, message: "Crop featched Succesfuly", singleCrop });
-        } else {
-            return res.status(404).json({
-                success: false,
-                message: "Crop not found in database"
-            });
-        }
-    } catch (error) {
-        console.log("Error in Crops Controller : ", error.message);
-        return res.status(500).json({
-            success: false,
-            error,
-        });
-    }
-}
+
 export const deleteCrops = async (req, res) => {
     const id = req.params.id;
     try {

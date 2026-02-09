@@ -3,7 +3,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import MainLayout from "./pages/MainLayout";
-import { ProtectAdminRoute, ProtectClientRoute, ProtectFarmerRoute } from "./component/ProtectRoute";
+import { ProtectAdminRoute, ProtectBrokerRoute, ProtectClientRoute, ProtectFarmerRoute } from "./component/ProtectRoute";
 import UserManagement from "./pages/admin/UserManagement";
 import SystemCrops from "./pages/admin/SystemCrops";
 import FarmerDashboard from "./pages/farmer/FarmerDashboard";
@@ -11,6 +11,9 @@ import FarmerCrops from "./pages/farmer/FarmerCrops";
 import FarmerOrders from "./pages/farmer/FarmerOrders";
 import ClientMarketPlace from "./pages/client/ClientMarketPlace";
 import ClientMyOrder from "./pages/client/ClientMyOrder";
+import BrokerDashboard from "./pages/broker/BrokerDashboard";
+import BrokerMarketplace from "./pages/broker/BrokerMarketPlace";
+import BrokerManageOrders from "./pages/broker/BrokerManageOrders";
 
 
 
@@ -70,6 +73,26 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard/client/my-orders",
                 element: <ProtectClientRoute> <ClientMyOrder /></ProtectClientRoute>,
+            },
+           
+        ]
+    },
+    // Broker Routes
+    {
+        path: "/",
+        element: <MainLayout />,
+        children: [
+            {
+                path: "/dashboard/broker",
+                element: <ProtectBrokerRoute> <BrokerDashboard /></ProtectBrokerRoute>,
+            },
+            {
+                path: "/dashboard/broker/marketplace",
+                element: <ProtectBrokerRoute> <BrokerMarketplace /></ProtectBrokerRoute>,
+            },
+            {
+                path: "/dashboard/broker/manage-orders",
+                element: <ProtectBrokerRoute> <BrokerManageOrders /></ProtectBrokerRoute>,
             },
            
         ]

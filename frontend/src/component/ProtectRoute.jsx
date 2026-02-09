@@ -90,5 +90,33 @@ export const ProtectClientRoute = ({ children }) => {
   return isValid ? children : <Navigate to='/login' />
 }
 
+export const ProtectBrokerRoute = ({ children }) => {
+  const [isValid, setIsValid] = useState(null)
+  const accessToken = localStorage.getItem('accessToken')
 
+  const verify = () => {
+    if (!accessToken) {
+      setIsValid(false) // token doesnot exist
+      return
+    }
+
+      const decoded = jwtDecode(accessToken)
+    
+      // token valid
+      if (decoded.role=="broker") {
+        setIsValid(true)
+      }else{
+        setIsValid(null)
+      }
+   
+  }
+
+  useEffect(() => {
+    verify()
+  }, [accessToken])
+
+  if (isValid === null) {return <Loader/>}  
+
+  return isValid ? children : <Navigate to='/login' />
+}
 

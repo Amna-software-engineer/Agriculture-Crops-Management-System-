@@ -1,5 +1,5 @@
 import React, { use } from 'react';
-import { LayoutDashboard, Users, Leaf, LogOut, Menu, X, Package, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Leaf, LogOut, Menu, X, Package, Settings, ShoppingCart } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -35,63 +35,83 @@ const AdminSidebar = () => {
           </div>
         </div>
 
-        {/* Navigation Links */}
         <nav className="space-y-2">
-          {/* --- DASHBOARD / MARKETPLACE LINK --- */}
+          {/* --- 1st LINK: Dashboard (Global) --- */}
           <Link
             to={
               (user?.role === "admin" && "/dashboard/admin") ||
               (user?.role === "farmer" && "/dashboard/farmer") ||
-              (user?.role === "client" && "/dashboard/client")
+              (user?.role === "client" && "/dashboard/client") ||
+              (user?.role === "broker" && "/dashboard/broker")
             }
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin') || isActive('/dashboard/farmer') || isActive('/dashboard/client') === true && !window.location.pathname.includes('orders')
-                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-                : 'hover:bg-gray-800 hover:text-gray-200'
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${(isActive("/dashboard/admin") ||
+                isActive("/dashboard/farmer") ||
+                isActive("/dashboard/client") ||
+                isActive("/dashboard/broker")) &&
+                window.location.pathname.split("/").length === 3
+                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/20"
+                : "hover:bg-gray-800 hover:text-gray-200"
               }`}
           >
             <LayoutDashboard size={20} />
-            <span className="font-medium">
-              {user?.role === "client" ? "Marketplace" : "Dashboard"}
-            </span>
+            <span className="font-medium">Dashboard</span>
           </Link>
 
-          {/* --- SECOND LINK: User Management (Admin) / My Crops (Farmer) / My Orders (Client) --- */}
-          <Link
-            to={
-              (user?.role === "admin" && "/dashboard/admin/user-managment") ||
-              (user?.role === "farmer" && "/dashboard/farmer/my-crops") ||
-              (user?.role === "client" && "/dashboard/client/my-orders")
-            }
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin/user-managment') || isActive('/dashboard/farmer/my-crops') || isActive('/dashboard/client/my-orders')
-                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-                : 'hover:bg-gray-800 hover:text-gray-200'
-              }`}
-          >
-            {user?.role === "admin" ? <Users size={20} /> : user?.role === "client" ? <Package size={20} /> : <Leaf size={20} />}
-            <span className="font-medium">
-              {(user?.role === "admin" && "User Management") ||
-                (user?.role === "farmer" && "My Crops") ||
-                (user?.role === "client" && "My Orders")}
-            </span>
-          </Link>
+          {/* --- 2nd LINK: Management/Crops/Orders (Broker excluded) --- */}
+          {user.role !== "broker" && (
+            <Link
+              to={
+                (user?.role === "admin" && "/dashboard/admin/user-managment") ||
+                (user?.role === "farmer" && "/dashboard/farmer/my-crops") ||
+                (user?.role === "client" && "/dashboard/client/my-orders")
+              }
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive("/dashboard/admin/user-managment") ||
+                  isActive("/dashboard/farmer/my-crops") ||
+                  isActive("/dashboard/client/my-orders")
+                  ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/20"
+                  : "hover:bg-gray-800 hover:text-gray-200"
+                }`}
+            >
+              {user?.role === "admin" ? <Users size={20} /> : <Package size={20} />}
+              <span className="font-medium">
+                {(user?.role === "admin" && "User Management") ||
+                  (user?.role === "farmer" && "My Crops") ||
+                  (user?.role === "client" && "My Orders")}
+              </span>
+            </Link>
+          )}
 
-          {/* --- THIRD LINK: System Crops (Admin) / Orders (Farmer) / Profile & Settings (Client) --- */}
-          <Link
-            to={
-              (user?.role === "admin" && "/dashboard/admin/system-crops") ||
-              (user?.role === "farmer" && "/dashboard/farmer/orders") 
-            }
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive('/dashboard/admin/system-crops') || isActive('/dashboard/farmer/orders') }
-                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-                : 'hover:bg-gray-800 hover:text-gray-200'
-              }`}
-          >
-            {user?.role !== "client" && <Leaf size={20} />} 
-            <span className="font-medium">
-              {(user?.role === "admin" && "System Crops") ||
-                (user?.role === "farmer" && "Orders") }
-            </span>
-          </Link>
+          {/* --- 3rd LINK: Specific Ops (Admin/Farmer/Broker) --- */}
+          {(user?.role === "admin" ||
+            user?.role === "farmer" ||
+            user?.role === "broker") && (
+              <Link
+                to={
+                  (user?.role === "admin" && "/dashboard/admin/system-crops") ||
+                  (user?.role === "farmer" && "/dashboard/farmer/orders") ||
+                  (user?.role === "broker" && "/dashboard/broker/manage-orders")
+                }
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive("/dashboard/admin/system-crops") ||
+                    isActive("/dashboard/farmer/orders") ||
+                    isActive("/dashboard/broker/manage-orders")
+                    ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/20"
+                    : "hover:bg-gray-800 hover:text-gray-200"
+                  }`}
+              >
+                {user?.role === "broker" ? (
+                  <ShoppingCart size={20} />
+                ) : (
+                  <Leaf size={20} />
+                )}
+                <span className="font-medium">
+                  {user?.role === "admin"
+                    ? "System Crops"
+                    : user?.role === "broker"
+                      ? "Manage Orders"
+                      : "Orders"}
+                </span>
+              </Link>
+            )}
         </nav>
 
         {/* Logout Button at Bottom */}
