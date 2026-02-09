@@ -59,7 +59,7 @@ const {deleteCrop}=useDeleteCrop()
                   {/* Farmer info from Populate */}
                   <td className="px-6 py-4 text-gray-600">
                     <div className="flex flex-col">
-                      <span>{crop?.formerId?.name || "Unknown Farmer"}</span>
+                      <span>{crop?.farmerId?.name || "Unknown Farmer"}</span>
                       <span className="text-xs text-gray-400">{crop?.location}</span>
                     </div>
                   </td>

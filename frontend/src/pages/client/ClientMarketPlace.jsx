@@ -95,7 +95,7 @@ const ClientMarketPlace = () => {
               <div>
                 <h3 className="font-bold text-slate-800 text-lg">{crop?.name}</h3>
                 <div className='flex justify-between'>
-                  <p className="text-slate-400 text-xs mt-1">  Sold by <span className="text-slate-600 font-medium">{crop?.formerId?.name}</span></p>
+                  <p className="text-slate-400 text-xs mt-1">  Sold by <span className="text-slate-600 font-medium">{crop?.farmerId?.name}</span></p>
                   <p className="text-slate-400 text-xs mt-1">Availabe Stock: <span className="text-slate-600 font-medium">{crop?.quantity}</span></p>
 
                 </div>

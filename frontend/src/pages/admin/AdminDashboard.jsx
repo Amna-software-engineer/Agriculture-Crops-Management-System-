@@ -51,8 +51,8 @@ const AdminDashboard = () => {
     ...cropList.map(crop => ({
       action: "New Crop Listed ",
       detail: crop.name,
-      user: crop?.formerId?.name || "Farmer",
-      time: new Date(crop.createdAt),
+      user: crop?.farmerId?.name || "Farmer",
+      time: new Date(crop?.createdAt),
       type: "crop"
     })),
 
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
       action: "New Order Placed ",
       detail: `Order #${order._id.slice(-5)}`,
       user: order?.buyer?.name || "Customer",
-      time: new Date(order.createdAt),
+      time: new Date(order?.createdAt),
       type: "order"
     })),
 
@@ -82,6 +82,8 @@ const AdminDashboard = () => {
       default: return <Bell className="text-gray-500" />;
     }
   };
+  console.log(recentActivities);
+  
   if (loading) {
     return <Loader />
   }
@@ -165,7 +167,7 @@ const AdminDashboard = () => {
 
                   {/* Time Column */}
                   <td className="px-6 py-3 text-right text-gray-400 text-xs">
-                    {/* {activity.time ? formatDistanceToNow(activity.time, { addSuffix: true }) : "N/A"} */}
+                    {activity.time ? formatDistanceToNow(activity.time, { addSuffix: true }) : "N/A"}
                   </td>
                 </tr>
               ))}

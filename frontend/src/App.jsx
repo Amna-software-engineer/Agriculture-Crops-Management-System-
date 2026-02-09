@@ -12,7 +12,6 @@ import FarmerOrders from "./pages/farmer/FarmerOrders";
 import ClientMarketPlace from "./pages/client/ClientMarketPlace";
 import ClientMyOrder from "./pages/client/ClientMyOrder";
 import BrokerDashboard from "./pages/broker/BrokerDashboard";
-import BrokerMarketplace from "./pages/broker/BrokerMarketPlace";
 import BrokerManageOrders from "./pages/broker/BrokerManageOrders";
 
 
@@ -85,10 +84,6 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard/broker",
                 element: <ProtectBrokerRoute> <BrokerDashboard /></ProtectBrokerRoute>,
-            },
-            {
-                path: "/dashboard/broker/marketplace",
-                element: <ProtectBrokerRoute> <BrokerMarketplace /></ProtectBrokerRoute>,
             },
             {
                 path: "/dashboard/broker/manage-orders",
