@@ -10,6 +10,7 @@ export const CropEndPoints = {
 };
 export const OrderEndPoints = {
     order: "/order",
+    deleteOrder: (id) => `/order/${id}`,
     editOrderStuts: (id) => `/order/status/${id}`,
 };
 export const UserEndPoints = {

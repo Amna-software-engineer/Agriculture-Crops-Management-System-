@@ -94,16 +94,15 @@ export const useGetItemsFromCart = () => {
     return { loading, error, getItems }
 }
 
-// custome hook to delete user from backend
+// custome hook to delete item from backend
 export const useDeleteItem = () => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // function to add User
+    // function to delete item
     const deleteItem = async (itemId) => {
         console.log(itemId);
-
         setLoading(true);
         setError(null);
         try {

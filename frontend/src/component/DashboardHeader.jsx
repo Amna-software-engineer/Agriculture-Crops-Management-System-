@@ -29,8 +29,8 @@ const DashboardHeader = ({ page, role,onCartClick }) => {
         </div>
         {/* CART ICON:  Client role */}
         {role?.toLowerCase() === 'client' && (
-          <div className="relative p-2.5 bg-white border border-gray-200 rounded-2xl cursor-pointer hover:bg-gray-50 transition-all shadow-sm group">
-            <ShoppingCart size={22} className="text-gray-600 group-hover:text-emerald-600" onClick={onCartClick}/>
+          <div className="relative p-2.5 bg-white border border-gray-200 rounded-2xl cursor-pointer hover:bg-gray-50 transition-all shadow-sm group" onClick={onCartClick}>
+            <ShoppingCart size={22} className="text-gray-600 group-hover:text-emerald-600" />
             
             {/* Static Badge */}
             <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white">

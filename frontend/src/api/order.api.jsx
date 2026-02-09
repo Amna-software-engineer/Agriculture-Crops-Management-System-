@@ -3,7 +3,7 @@ import { BaseApi } from "./base.api";
 import { CropEndPoints, OrderEndPoints } from "./endpoints";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { setOrder } from "../features/order.slice";
+import { removeOrderFromStore, setOrder } from "../features/order.slice";
 // custome hook to get all order from backend
 export const useGetAllOrders = () => {
     const [loading, setLoading] = useState(false);
@@ -73,7 +73,7 @@ export const useEditOrderStatus = () => {
     const dispatch = useDispatch();
     const orderList = useSelector(state => state.orders.orders);
 
-    // function to edit User
+    // function to edit order status
     const editStatus = async ({ status }, id) => {
         console.log("id", id);
         setLoading(true);
@@ -107,3 +107,34 @@ export const useEditOrderStatus = () => {
     return { loading, error, editStatus }
 }
 
+// custome hook to delete order from backend
+export const useDeleteOrder = () => {
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const orderList = useSelector(state => state.orders.orders);
+
+    // function to delete Order
+    const deleteOrder = async (id) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await BaseApi.delete(OrderEndPoints.deleteOrder(id));
+            console.log("deleted response ", response);
+
+            if (response.data) {
+                const updatedList = orderList.filter(order => order._id !== id);
+                toast.success("Order Deleted Successfully.");
+                dispatch(removeOrderFromStore(id));
+                return updatedList;
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message || err?.message || "Order deleting failed";
+            setError(message);
+            toast.error(message);
+        } finally {
+            setLoading(false)
+        }
+    }
+    return { loading, error, deleteOrder }
+}
