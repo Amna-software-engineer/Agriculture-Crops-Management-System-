@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const BaseApi = axios.create({
-    baseURL: "http://localhost:3000/api",
+    baseURL: "https://agriculture-crops-management-system.vercel.app/api",
     headers: {
         "Content-Type": "application/json",
     },

@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv"
+dotenv.config();
+
+const mongodb_URL = process.env.mongodb_URL;
+
 
 export const ConnectDb = async () => {
     try {
         const connection = await mongoose.connect(
-            "mongodb://localhost:27017/agri-manage",
+            mongodb_URL,
         );
 
         if (connection.connection) {
