@@ -18,19 +18,23 @@ const app = express();
 app.use(express.json());
 app.use(
     cors({
-        origin: "https://agri-manage-one.vercel.app/",
-        methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
+        origin: "https://agri-manage-one.vercel.app",
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        credentials: true
     }),
 );
 
 app.use("/api/auth", AuthRouter);
-app.use("/api",cropRouter);
-app.use("/api",userRouter);
-app.use("/api",orderRouter);
-app.use("/api",cartRouter);
+app.use("/api", cropRouter);
+app.use("/api", userRouter);
+app.use("/api", orderRouter);
+app.use("/api", cartRouter);
 
 
-app.listen(PORT, async () => {
-    console.log(`Server is listing on PORT=${PORT}`);
-    await ConnectDb();
-});
+// app.listen(PORT, async () => {
+//     console.log(`Server is listing on PORT=${PORT}`);
+//     await ConnectDb();
+// });
+
+await ConnectDb();
+export default app;
