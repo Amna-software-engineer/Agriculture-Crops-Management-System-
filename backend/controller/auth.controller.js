@@ -11,6 +11,8 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "somerefreshsecret"
 
 // Login Contoller
 export const Login = async (req, res) => {
+    console.log("Login called ",req.body);
+    
     const {email,password}=req.body;
     
             try {
@@ -22,13 +24,18 @@ export const Login = async (req, res) => {
                     
                 }
                 const user = await UserModel.findOne({ email });
+                console.log("User found: ", user);
                 if (!user) {
                     return res .status(404) .json( { 
                         success: false,
                          message: "email or user does not found"
                      }); }
                 const isMatch = await bcrypt.compare(password, user.password);
+
+                console.log("isMatch",isMatch);
                 if (isMatch) {
+                    console.log("isMatch",isMatch);
+                    
                     const accessToken = jwt.sign(
                         { name: user.name, email: user.email,role: user.role ,  _id: user._id,},
                         JWT_ACCESS_SECRET,
@@ -49,6 +56,8 @@ export const Login = async (req, res) => {
                             role: user.role,
                         },
                     });
+                }else{
+                    res.status(400).json({ success:false, message: ["Invalid Credentials"] })
                 }
             } catch (error) {
                 console.log(error);

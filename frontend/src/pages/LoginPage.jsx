@@ -22,7 +22,9 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = await login(formData);
-        await getItems({ buyer: data.user._id });
+        console.log(data);
+        
+        await getItems({ buyer: data?.user?._id });
 
         if (data) {
             dispatch(setAuth(data.user));

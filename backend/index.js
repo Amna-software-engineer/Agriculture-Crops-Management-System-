@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(
     cors({
-        origin: "https://agri-manage-one.vercel.app",
+        origin: ["https://agri-manage-one.vercel.app", "http://localhost:5173"],
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
         credentials: true
     }),
@@ -36,5 +36,11 @@ app.use("/api", cartRouter);
 //     await ConnectDb();
 // });
 
-await ConnectDb();
+
+app.listen(PORT, async() => {
+    await ConnectDb();
+    console.log(`Server is running on port ${PORT}`);
+});
+
+
 export default app;
